@@ -1,0 +1,10 @@
+name: Caribien-Lobby-System
+version: '${project.version}'
+main: server_plugin.caribien.Caribien
+api-version: 1.16
+authors: [ SuperTuxi ]
+description: Plugin for Caribien Server
+commands:
+  setup:
+    description: Setup for certain server functions
+    usage: /<command>
