@@ -17,8 +17,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
-import server_plugin.caribien.Lobbysafety.AntiDamage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class Caribien extends JavaPlugin implements Listener {
@@ -27,13 +28,22 @@ public final class Caribien extends JavaPlugin implements Listener {
 
     public Jump_N_Run jumpNRun = new Jump_N_Run(this);
 
-    public AntiDamage antiDamage = new AntiDamage();
-
     public ChatPrefix chatPrefix = new ChatPrefix();
+
+    public BuildCMD buildCMD = new BuildCMD();
 
     public Scoreboard mainScoreboard;
 
     public static String world = "world";
+
+    public static Caribien plugin;
+    public static List<Player> build = new ArrayList<>();
+    public static String prefix = "§b§lCaribien " + "§a§l| ";
+    public static String noperms = prefix + "§cDazu hast du keine Rechte.";
+    public static String notfound = prefix + "§cDieser Spieler wurde nicht gefunden.";
+
+
+
 
     @Override
     public void onEnable() {
@@ -43,6 +53,13 @@ public final class Caribien extends JavaPlugin implements Listener {
         createScoreboards();
 
         Objects.requireNonNull(Bukkit.getWorld(world)).setPVP(false);
+
+        getCommand("build").setExecutor(new BuildCMD());
+
+
+
+
+
     }
 
     @Override
@@ -55,8 +72,9 @@ public final class Caribien extends JavaPlugin implements Listener {
 
         pm.registerEvents(this, this);
         pm.registerEvents(jumpNRun, this);
-        pm.registerEvents(antiDamage, this);
         pm.registerEvents(chatPrefix, this);
+        pm.registerEvents(new ProtectionListener(), this);
+
     }
 
     private void registerCommands() {

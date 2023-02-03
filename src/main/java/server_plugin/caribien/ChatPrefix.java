@@ -4,7 +4,9 @@ package server_plugin.caribien;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.types.PrefixNode;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class ChatPrefix implements Listener {
 
 
+
     @EventHandler
     public void onChat(PlayerChatEvent e) {
         final String message = e.getMessage().replace("%", "%%");
@@ -24,6 +27,7 @@ public class ChatPrefix implements Listener {
         User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
         Group group = LuckPermsProvider.get().getGroupManager().getGroup(user.getPrimaryGroup());
         assert group != null;
+        String prefix = user.getCachedData().getMetaData().getPrefix();
         String groupName;
         if (group.getDisplayName() == null) {
             groupName = group.getName();
@@ -31,7 +35,7 @@ public class ChatPrefix implements Listener {
             groupName = group.getDisplayName();
         }
 
-        e.setFormat(groupName + "" + " | " + e.getPlayer().getName() + " >> " + e.getMessage());
+        e.setFormat(format(prefix)+groupName + "" + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §8>> " + ChatColor.GRAY + e.getMessage());
 
         Bukkit.getOnlinePlayers().stream().filter(player -> message.contains(p.getName())).forEach(player -> {
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
@@ -45,11 +49,15 @@ public class ChatPrefix implements Listener {
 
     @EventHandler
     public void PlayerJoin(PlayerJoinEvent e) {
-        e.setJoinMessage("");
+        e.setJoinMessage(" ");
         Player p = e.getPlayer();
-        sendTitle(p, 30, 100, 10, "§7§lWelcome " + p.getName() + " to", "§5§l§oOP§f§l§oHub");
+        sendTitle(p, 30, 500, 10, "§7§lWelcome " + p.getName() + " to", "§5§l§oOP§f§l§oHub");
 
 
+    }
+
+    public String format(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
 }

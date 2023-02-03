@@ -76,7 +76,7 @@ public class setupCommand implements CommandExecutor {
                     MainHelp(p);
                 }
             }else {
-                p.sendMessage(format("&cYou are not an Operator!"));
+                p.sendMessage(format("§b§lCaribien " + "§a§l| " + ChatColor.RED + "Dazu hast du keine Rechte "));
             }
             return true;
         }

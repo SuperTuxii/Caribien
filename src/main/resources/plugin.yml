@@ -8,3 +8,4 @@ commands:
   setup:
     description: Setup for certain server functions
     usage: /<command>
+  build:
