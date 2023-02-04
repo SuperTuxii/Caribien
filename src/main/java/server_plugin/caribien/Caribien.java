@@ -147,7 +147,6 @@ public final class Caribien extends JavaPlugin implements Listener {
             Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).setScore(0);
         }
 
-        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS , 1, 1);
     }
 
     @EventHandler

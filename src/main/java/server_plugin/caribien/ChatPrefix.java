@@ -43,7 +43,6 @@ public class ChatPrefix implements Listener {
     public void PlayerJoin(PlayerJoinEvent e) {
         e.setJoinMessage(" ");
         Player p = e.getPlayer();
-        p.sendTitle("§7§lWelcome " + p.getName() + " to", "§5§l§oOP§f§l§oHub", 30, 500, 10);
     }
 
     public String format(String message) {
