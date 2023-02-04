@@ -26,7 +26,7 @@ public class Jump_N_Run implements Listener {
         main = caribien;
     }
 
-    public int[][] Checkpoints = {{847, 136, -149}, {829, 137, -147}, {851, 140, -141}, {848, 142, -151}, {839, 159, -138}, {841, 164, -145}, {839, 169, -138}};
+    public int[][] Checkpoints = {{847, 136, -149, 140, 30}, {829, 137, -147, 0, 10}, {851, 140, -141, 210, 10}, {848, 142, -151, 140, 20}, {839, 159, -138, 280, 15}, {841, 164, -145, 90, 10}, {839, 169, -138, 240, 15}};
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
@@ -235,21 +235,21 @@ public class Jump_N_Run implements Listener {
                     event.setCancelled(true);
                 }else if (event.getItem().getType().equals(Material.MAGENTA_GLAZED_TERRACOTTA) && event.getItem().getItemMeta().getDisplayName().equals(format("&eBack"))) {
                     if (p.getScoreboardTags().contains("Checkpoint 7")) {
-                        p.teleport(new Location(p.getWorld(), Checkpoints[6][0] + 0.5, Checkpoints[6][1] + 1, Checkpoints[6][2] + 0.5));
+                        p.teleport(new Location(p.getWorld(), Checkpoints[6][0] + 0.5, Checkpoints[6][1] + 1, Checkpoints[6][2] + 0.5, Checkpoints[6][3], Checkpoints[6][4]));
                     }else if (p.getScoreboardTags().contains("Checkpoint 6")) {
-                        p.teleport(new Location(p.getWorld(), Checkpoints[5][0] + 0.5, Checkpoints[5][1] + 1, Checkpoints[5][2] + 0.5));
+                        p.teleport(new Location(p.getWorld(), Checkpoints[5][0] + 0.5, Checkpoints[5][1] + 1, Checkpoints[5][2] + 0.5, Checkpoints[5][3], Checkpoints[5][4]));
                     }else if (p.getScoreboardTags().contains("Checkpoint 5")) {
-                        p.teleport(new Location(p.getWorld(), Checkpoints[4][0] + 0.5, Checkpoints[4][1] + 1, Checkpoints[4][2] + 0.5));
+                        p.teleport(new Location(p.getWorld(), Checkpoints[4][0] + 0.5, Checkpoints[4][1] + 1, Checkpoints[4][2] + 0.5, Checkpoints[4][3], Checkpoints[4][4]));
                     }else if (p.getScoreboardTags().contains("Checkpoint 4")) {
-                        p.teleport(new Location(p.getWorld(), Checkpoints[3][0] + 0.5, Checkpoints[3][1] + 1, Checkpoints[3][2] + 0.5));
+                        p.teleport(new Location(p.getWorld(), Checkpoints[3][0] + 0.5, Checkpoints[3][1] + 1, Checkpoints[3][2] + 0.5, Checkpoints[3][3], Checkpoints[3][4]));
                     }else if (p.getScoreboardTags().contains("Checkpoint 3")) {
-                        p.teleport(new Location(p.getWorld(), Checkpoints[2][0] + 0.5, Checkpoints[2][1] + 1, Checkpoints[2][2] + 0.5));
+                        p.teleport(new Location(p.getWorld(), Checkpoints[2][0] + 0.5, Checkpoints[2][1] + 1, Checkpoints[2][2] + 0.5, Checkpoints[2][3], Checkpoints[2][4]));
                     }else if (p.getScoreboardTags().contains("Checkpoint 2")) {
-                        p.teleport(new Location(p.getWorld(), Checkpoints[1][0] + 0.5, Checkpoints[1][1] + 1, Checkpoints[1][2] + 0.5));
+                        p.teleport(new Location(p.getWorld(), Checkpoints[1][0] + 0.5, Checkpoints[1][1] + 1, Checkpoints[1][2] + 0.5, Checkpoints[1][3], Checkpoints[1][4]));
                     }else if (p.getScoreboardTags().contains("Checkpoint 1")) {
-                        p.teleport(new Location(p.getWorld(), Checkpoints[0][0] + 0.5, Checkpoints[0][1] + 1, Checkpoints[0][2] + 0.5));
+                        p.teleport(new Location(p.getWorld(), Checkpoints[0][0] + 0.5, Checkpoints[0][1] + 1, Checkpoints[0][2] + 0.5, Checkpoints[0][3], Checkpoints[0][4]));
                     }else {
-                        p.teleport(new Location(p.getWorld(), 841.5, 121, -129.5));
+                        p.teleport(new Location(p.getWorld(), 841.5, 121, -129.5, 190, -10));
                     }
                     event.setCancelled(true);
                 }
