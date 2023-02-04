@@ -269,7 +269,9 @@ public class Jump_N_Run implements Listener {
         if (!Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).isScoreSet()) {
             Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).setScore(0);
         }
+        setScoreboard(p);
         new BukkitRunnable() {
+            int old_time = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore();
 
             @Override
             public void run() {
@@ -277,139 +279,106 @@ public class Jump_N_Run implements Listener {
                     p.removeScoreboardTag("Jump'n Run");
                     cancel();
                 }
-
                 if (!p.getScoreboardTags().contains("Jump'n Run")) {
                     cancel();
                 }else {
-                    Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).setScore(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() + 1);
                     ScoreboardManager manager = Bukkit.getScoreboardManager();
                     assert manager != null;
                     Scoreboard scoreboard = p.getScoreboard();
                     Objective objective = scoreboard.getObjective(p.getName());
-                    if (objective != null) {
-                        objective.unregister();
-                    }
-                    objective = scoreboard.registerNewObjective(p.getName(), "DUMMY", format("&b&lCaribien.de"));
-                    objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-                    //Scoreboard Anzeige
-                    Score s0 = objective.getScore(format("&0 "));
-                    s0.setScore(6);
-                    Score s1 = objective.getScore(format("&6&lBestzeit:"));
-                    s1.setScore(5);
-                    if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() < 20) {
-                        Score s2 = objective.getScore(format("&e" + "00" + ":" + Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore()));
-                        s2.setScore(4);
-                    } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() < 1200) {
-                        int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() / 20;
-                        Score s2;
-                        if (seconds < 10) {
-                            s2 = objective.getScore(format("&e" + "0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else {
-                            s2 = objective.getScore(format("&e" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        }
-                        s2.setScore(4);
-                    } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() < 72000) {
-                        int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 1200;
-                        seconds /= 20;
-                        int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() / 1200;
-                        Score s2;
-                        if (seconds < 10 && minutes < 10) {
-                            s2 = objective.getScore(format("&e" + "0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds < 10) {
-                            s2 = objective.getScore(format("&e" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (minutes < 10) {
-                            s2 = objective.getScore(format("&e" + "0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else {
-                            s2 = objective.getScore(format("&e" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        }
-                        s2.setScore(4);
-                    } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() > 72000) {
-                        int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 1200;
-                        seconds /= 20;
-                        int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 72000;
-                        minutes /= 1200;
-                        int hours = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() / 72000;
-                        Score s2;
-                        if (seconds < 10 && minutes < 10 && hours < 10) {
-                            s2 = objective.getScore(format("&e" + "0" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds >= 10 && minutes < 10 && hours < 10) {
-                            s2 = objective.getScore(format("&e" + "0" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds < 10 && minutes >= 10 && hours < 10) {
-                            s2 = objective.getScore(format("&e" + "0" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds >= 10 && minutes >= 10 && hours < 10) {
-                            s2 = objective.getScore(format("&e" + "0" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds < 10 && minutes < 10) {
-                            s2 = objective.getScore(format("&e" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds >= 10 && minutes < 10) {
-                            s2 = objective.getScore(format("&e" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds < 10) {
-                            s2 = objective.getScore(format("&e" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else {
-                            s2 = objective.getScore(format("&e" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        }
-                        s2.setScore(4);
-                    }
-                    Score s3 = objective.getScore(format("&1 "));
-                    s3.setScore(3);
-                    Score s7 = objective.getScore(format("&6&lZeit:"));
-                    s7.setScore(2);
-                    if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() < 20) {
-                        Score s8 = objective.getScore(format("&e" + "00" + ":" + Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore()));
-                        s8.setScore(1);
-                    } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() < 1200) {
-                        int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() / 20;
-                        Score s8;
-                        if (seconds < 10) {
-                            s8 = objective.getScore(format("&e" + "0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else {
-                            s8 = objective.getScore(format("&e" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        }
-                        s8.setScore(1);
-                    } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() < 72000) {
-                        int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 1200;
-                        seconds /= 20;
-                        int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() / 1200;
-                        Score s8;
-                        if (seconds < 10 && minutes < 10) {
-                            s8 = objective.getScore(format("&e" + "0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds < 10) {
-                            s8 = objective.getScore(format("&e" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (minutes < 10) {
-                            s8 = objective.getScore(format("&e" + "0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else {
-                            s8 = objective.getScore(format("&e" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        }
-                        s8.setScore(1);
-                    } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() > 72000) {
-                        int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 1200;
-                        seconds /= 20;
-                        int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 72000;
-                        minutes /= 1200;
-                        int hours = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() / 72000;
-                        Score s8;
-                        if (seconds < 10 && minutes < 10 && hours < 10) {
-                            s8 = objective.getScore(format("&e" + "0" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds >= 10 && minutes < 10 && hours < 10) {
-                            s8 = objective.getScore(format("&e" + "0" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds < 10 && minutes >= 10 && hours < 10) {
-                            s8 = objective.getScore(format("&e" + "0" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds >= 10 && minutes >= 10 && hours < 10) {
-                            s8 = objective.getScore(format("&e" + "0" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds < 10 && minutes < 10) {
-                            s8 = objective.getScore(format("&e" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds >= 10 && minutes < 10) {
-                            s8 = objective.getScore(format("&e" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else if (seconds < 10) {
-                            s8 = objective.getScore(format("&e" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        } else {
-                            s8 = objective.getScore(format("&e" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3)));
-                        }
-                        s8.setScore(1);
-                    }
-
+                    assert objective != null;
+                    Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).setScore(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() + 1);
+                    updateScoreboard(objective, Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore(), old_time);
                 }
+                old_time = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore();
             }
         }.runTaskTimer(main, 1L, 1L);
+    }
+
+    public void setScoreboard(Player p) {
+        Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).setScore(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() + 1);
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        assert manager != null;
+        Scoreboard scoreboard = p.getScoreboard();
+        Objective objective = scoreboard.getObjective(p.getName());
+        if (objective != null) {
+            objective.unregister();
+        }
+        objective = scoreboard.registerNewObjective(p.getName(), "DUMMY", format("&b&lCaribien.de"));
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        //Scoreboard Anzeige
+        Score s0 = objective.getScore(format("&0 "));
+        s0.setScore(6);
+        Score s1 = objective.getScore(format("&6&lBestzeit:"));
+        s1.setScore(5);
+        Score s2 = objective.getScore(formatTime(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore()));
+        s2.setScore(4);
+        Score s3 = objective.getScore(format("&1 "));
+        s3.setScore(3);
+        Score s7 = objective.getScore(format("&6&lZeit:"));
+        s7.setScore(2);
+        Score s8 = objective.getScore(formatTime(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore()));
+        s8.setScore(1);
+    }
+
+    public void updateScoreboard(Objective objective, int time, int old_time) {
+        Score SpielzeitScore = objective.getScore(formatTime(time));
+        SpielzeitScore.setScore(1);
+        SpielzeitScore = objective.getScore(formatTime(old_time));
+        if (SpielzeitScore.isScoreSet() && SpielzeitScore.getScore() == 1) {
+            Objects.requireNonNull(objective.getScoreboard()).resetScores(formatTime(old_time));
+        }
+    }
+
+    public String formatTime(int time) {
+        String string = format("&4ERROR");
+        if (time < 20) {
+            string = format("&e" + "00" + ":" + time);
+        } else if (time < 1200) {
+            int seconds = time / 20;
+            if (seconds < 10) {
+                string = format("&e" + "0" + seconds + ":" + ((time % 20) * 3));
+            } else {
+                string = format("&e" + seconds + ":" + ((time % 20) * 3));
+            }
+        } else if (time < 72000) {
+            int seconds = time % 1200;
+            seconds /= 20;
+            int minutes = time / 1200;
+            if (seconds < 10 && minutes < 10) {
+                string = format("&e" + "0" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+            } else if (seconds < 10) {
+                string = format("&e" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+            } else if (minutes < 10) {
+                string = format("&e" + "0" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+            } else {
+                string = format("&e" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+            }
+        } else if (time > 72000) {
+            int seconds = time % 1200;
+            seconds /= 20;
+            int minutes = time % 72000;
+            minutes /= 1200;
+            int hours = time / 72000;
+            if (seconds < 10 && minutes < 10 && hours < 10) {
+                string = format("&e" + "0" + hours + ":0" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+            } else if (seconds >= 10 && minutes < 10 && hours < 10) {
+                string = format("&e" + "0" + hours + ":0" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+            } else if (seconds < 10 && minutes >= 10 && hours < 10) {
+                string = format("&e" + "0" + hours + ":" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+            } else if (seconds >= 10 && minutes >= 10 && hours < 10) {
+                string = format("&e" + "0" + hours + ":" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+            } else if (seconds < 10 && minutes < 10) {
+                string = format("&e" + hours + ":0" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+            } else if (seconds >= 10 && minutes < 10) {
+                string = format("&e" + hours + ":0" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+            } else if (seconds < 10) {
+                string = format("&e" + hours + ":" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+            } else {
+                string = format("&e" + hours + ":" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+            }
+        }
+        return string;
     }
 
     public String format(String message) {

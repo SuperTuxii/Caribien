@@ -35,8 +35,6 @@ public final class Caribien extends JavaPlugin implements Listener {
     public Scoreboard mainScoreboard;
 
     public static String world = "world";
-
-    public static Caribien plugin;
     public static List<Player> build = new ArrayList<>();
     public static String prefix = "§b§lCaribien " + "§a§l| ";
     public static String noperms = prefix + "§cDazu hast du keine Rechte.";
@@ -53,13 +51,6 @@ public final class Caribien extends JavaPlugin implements Listener {
         createScoreboards();
 
         Objects.requireNonNull(Bukkit.getWorld(world)).setPVP(false);
-
-        getCommand("build").setExecutor(new BuildCMD());
-
-
-
-
-
     }
 
     @Override
@@ -79,6 +70,7 @@ public final class Caribien extends JavaPlugin implements Listener {
 
     private void registerCommands() {
         Objects.requireNonNull(getCommand("setup")).setExecutor(setupCommand);
+        Objects.requireNonNull(getCommand("build")).setExecutor(buildCMD);
     }
 
     private void createScoreboards() {

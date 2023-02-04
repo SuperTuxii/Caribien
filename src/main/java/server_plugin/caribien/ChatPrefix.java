@@ -4,14 +4,13 @@ package server_plugin.caribien;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.types.PrefixNode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 
@@ -20,7 +19,7 @@ public class ChatPrefix implements Listener {
 
 
     @EventHandler
-    public void onChat(PlayerChatEvent e) {
+    public void onChat(AsyncPlayerChatEvent e) {
         final String message = e.getMessage().replace("%", "%%");
 
         Player p = e.getPlayer();
@@ -37,23 +36,14 @@ public class ChatPrefix implements Listener {
 
         e.setFormat(format(prefix)+groupName + "" + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §8>> " + ChatColor.GRAY + e.getMessage());
 
-        Bukkit.getOnlinePlayers().stream().filter(player -> message.contains(p.getName())).forEach(player -> {
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-        });
-    }
-
-    @Deprecated
-    public static void sendTitle(Player player, Integer fadeIn, Integer stay, Integer fadeOut, String title, String subtitle) {
-        sendTitle(player, fadeIn, stay, fadeOut, title, subtitle);
+        Bukkit.getOnlinePlayers().stream().filter(player -> message.contains(p.getName())).forEach(player -> p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1));
     }
 
     @EventHandler
     public void PlayerJoin(PlayerJoinEvent e) {
         e.setJoinMessage(" ");
         Player p = e.getPlayer();
-        sendTitle(p, 30, 500, 10, "§7§lWelcome " + p.getName() + " to", "§5§l§oOP§f§l§oHub");
-
-
+        p.sendTitle("§7§lWelcome " + p.getName() + " to", "§5§l§oOP§f§l§oHub", 30, 500, 10);
     }
 
     public String format(String message) {
