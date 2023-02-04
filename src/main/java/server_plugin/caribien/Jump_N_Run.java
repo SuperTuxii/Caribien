@@ -249,7 +249,7 @@ public class Jump_N_Run implements Listener {
                     }else if (p.getScoreboardTags().contains("Checkpoint 1")) {
                         p.teleport(new Location(p.getWorld(), Checkpoints[0][0] + 0.5, Checkpoints[0][1] + 1, Checkpoints[0][2] + 0.5, Checkpoints[0][3], Checkpoints[0][4]));
                     }else {
-                        p.teleport(new Location(p.getWorld(), 841.5, 121, -129.5, 190, -10));
+                        p.teleport(new Location(p.getWorld(), 841.5, 121, -128.5, 190, -10));
                     }
                     event.setCancelled(true);
                 }

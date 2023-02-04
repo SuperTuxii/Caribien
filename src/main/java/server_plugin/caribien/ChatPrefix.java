@@ -42,7 +42,6 @@ public class ChatPrefix implements Listener {
     @EventHandler
     public void PlayerJoin(PlayerJoinEvent e) {
         e.setJoinMessage(" ");
-        Player p = e.getPlayer();
     }
 
     public String format(String message) {

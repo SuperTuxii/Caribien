@@ -51,10 +51,12 @@ public class ProtectionListener implements Listener {
     public void onDamage(EntityDamageEvent e) {
         e.setCancelled(true);
     }
+
     @EventHandler
     public void onFood(FoodLevelChangeEvent e) {
         e.setCancelled(true);
     }
+
     @EventHandler
     public void onWeather(WeatherChangeEvent e) {
         e.setCancelled(true);
