@@ -148,6 +148,7 @@ public final class Caribien extends JavaPlugin implements Listener {
             Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).setScore(0);
         }
         p.teleport(new Location(p.getWorld(), LobbySpawn[0], LobbySpawn[1], LobbySpawn[2]));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 10000000, 1, false, false, false));
     }
 
     @EventHandler
