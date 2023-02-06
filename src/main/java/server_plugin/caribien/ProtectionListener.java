@@ -61,4 +61,21 @@ public class ProtectionListener implements Listener {
     public void onWeather(WeatherChangeEvent e) {
         e.setCancelled(true);
     }
+    
+    @EventHandler
+    public void onEntityInteract(EntityInteractEvent event) {
+        Block block = event.getBlock();
+        if(block != null && block.getType() == Material.FARMLAND) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if(event.getAction() == Action.PHYSICAL) {
+            if(event.getClickedBlock().getType() == Material.FARMLAND) {
+                event.setCancelled(true);
+            }
+        }
+    }
 }
