@@ -41,7 +41,53 @@ public class ChatPrefix implements Listener {
 
     @EventHandler
     public void PlayerJoin(PlayerJoinEvent e) {
-        e.setJoinMessage(" ");
+        Player p = e.getPlayer();
+        User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
+        Group group = LuckPermsProvider.get().getGroupManager().getGroup(user.getPrimaryGroup());
+        assert group != null;
+        String prefix = user.getCachedData().getMetaData().getPrefix();
+        String groupName;
+        if (group.getDisplayName() == null) {
+            groupName = group.getName();
+        } else {
+            groupName = group.getDisplayName();
+        }
+
+        e.setJoinMessage(format(prefix) + groupName + "" + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §bist auf der Insel gestrandet!"));
+    }
+    
+    @EventHandler
+    public void PlayerQuit(PlayerQuitEvent e) {
+        Player p = e.getPlayer();
+        User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
+        Group group = LuckPermsProvider.get().getGroupManager().getGroup(user.getPrimaryGroup());
+        assert group != null;
+        String prefix = user.getCachedData().getMetaData().getPrefix();
+        String groupName;
+        if (group.getDisplayName() == null) {
+            groupName = group.getName();
+        } else {
+            groupName = group.getDisplayName();
+        }
+
+        e.setQuitMessage(format(prefix) + groupName + "" + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §bist dem Fluch der Insel entkommen!"));
+    }
+    
+    @EventHandler
+    public void PlayerKick(PlayerKickEvent e) {
+        Player p = e.getPlayer();
+        User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
+        Group group = LuckPermsProvider.get().getGroupManager().getGroup(user.getPrimaryGroup());
+        assert group != null;
+        String prefix = user.getCachedData().getMetaData().getPrefix();
+        String groupName;
+        if (group.getDisplayName() == null) {
+            groupName = group.getName();
+        } else {
+            groupName = group.getDisplayName();
+        }
+
+        e.setLeaveMessage(format(prefix) + groupName + "" + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §bist über die Planke gegangen!"));
     }
 
     public String format(String message) {
