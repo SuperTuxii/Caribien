@@ -54,7 +54,7 @@ public class ProtectionListener implements Listener {
 
     @EventHandler
     public void onFood(FoodLevelChangeEvent e) {
-        e.setCancelled(true);
+        e.setFoodLevel(20);
     }
 
     @EventHandler
