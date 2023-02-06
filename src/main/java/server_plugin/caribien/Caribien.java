@@ -38,6 +38,8 @@ public final class Caribien extends JavaPlugin implements Listener {
     public static String prefix = "§b§lCaribien " + "§a§l| ";
     public static String noperms = prefix + "§cDazu hast du keine Rechte.";
     public static String notfound = prefix + "§cDieser Spieler wurde nicht gefunden.";
+    
+    public int[] LobbySpawn = {0, 0, 0};
 
 
 
@@ -145,7 +147,7 @@ public final class Caribien extends JavaPlugin implements Listener {
         if (!Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).isScoreSet()) {
             Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).setScore(0);
         }
-
+        p.teleport(new Location(p.getWorld(), LobbySpawn[0], LobbySpawn[1], LobbySpawn[2]));
     }
 
     @EventHandler
