@@ -5,6 +5,7 @@ import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,8 +15,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
+import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +43,9 @@ public final class Caribien extends JavaPlugin implements Listener {
     public static String noperms = prefix + "§cDazu hast du keine Rechte.";
     public static String notfound = prefix + "§cDieser Spieler wurde nicht gefunden.";
     
-    public int[] LobbySpawn = {0, 0, 0};
+    public int[] LobbySpawn = {877, 94, -47};
 
-
-
+    Jedis jedis;
 
     @Override
     public void onEnable() {
@@ -52,6 +55,8 @@ public final class Caribien extends JavaPlugin implements Listener {
         createScoreboards();
 
         Objects.requireNonNull(Bukkit.getWorld(world)).setPVP(false);
+
+        getJedis();
     }
 
     @Override
@@ -115,9 +120,39 @@ public final class Caribien extends JavaPlugin implements Listener {
 
     }
 
+    private void getJedis() {
+        jedis = new Jedis("127.0.0.1", 6379, 5000);
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
+
+        int coins;
+        int spielzeit;
+        if (jedis.get(p.getUniqueId() + "coins") == null && jedis.get(p.getUniqueId() + "spielzeit") == null) {
+            if (!Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).isScoreSet()) {
+                coins = 0;
+                Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).setScore(0);
+            }else {
+                coins = Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).getScore();
+            }
+            if (!Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).isScoreSet()) {
+                spielzeit = 0;
+                Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).setScore(0);
+            }else {
+                spielzeit = Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).getScore();
+            }
+            jedis.set(p.getUniqueId() + "coins", String.valueOf(coins));
+            jedis.set(p.getUniqueId() + "spielzeit", String.valueOf(spielzeit));
+        }else {
+            coins = Integer.parseInt(jedis.get(p.getUniqueId() + "coins"));
+            spielzeit = Integer.parseInt(jedis.get(p.getUniqueId() + "spielzeit"));
+        }
+
+        Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).setScore(coins);
+        Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).setScore(spielzeit);
+
         p.removeScoreboardTag("Jump'n Run");
 
         User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
@@ -144,11 +179,8 @@ public final class Caribien extends JavaPlugin implements Listener {
             p.setScoreboard(scoreboard);
             Spielzeit_Counter(p);
         }
-        if (!Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).isScoreSet()) {
-            Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).setScore(0);
-        }
-        p.teleport(new Location(p.getWorld(), LobbySpawn[0], LobbySpawn[1], LobbySpawn[2]));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 10000000, 1, false, false, false));
+        p.teleport(new Location(p.getWorld(), LobbySpawn[0] + 0.5, LobbySpawn[1] + 0.5, LobbySpawn[2] + 0.5, 218, -10));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, false, false, false));
     }
 
     @EventHandler
@@ -172,6 +204,10 @@ public final class Caribien extends JavaPlugin implements Listener {
                     cancel();
                 }
                 Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).setScore(Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).getScore() + 1);
+                jedis.set(p.getUniqueId() + "spielzeit", String.valueOf(Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).getScore()));
+                if (Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).getScore() != Integer.parseInt(jedis.get(p.getUniqueId() + "coins"))) {
+                    jedis.set(p.getUniqueId() + "coins", String.valueOf(Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).getScore()));
+                }
 
                 if (!p.getScoreboardTags().contains("Jump'n Run")) {
                     User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
@@ -210,7 +246,7 @@ public final class Caribien extends JavaPlugin implements Listener {
         }.runTaskTimer(this, 20L, 20L);
     }
 
-    public void setScoreboard(Player p, Objective objective, String groupName, String Spielzeit) {
+    public void setScoreboard(Player p, Objective objective, String groupName, String Spielzeit)  {
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         //Scoreboard Anzeige
         Score s0 = objective.getScore(format("&3"));

@@ -232,6 +232,7 @@ public class Jump_N_Run implements Listener {
                     p.removeScoreboardTag("Checkpoint 6");
                     p.removeScoreboardTag("Checkpoint 7");
                     p.getInventory().clear();
+                    p.teleport(new Location(p.getWorld(), 841.5, 121, -127.5, 190, -10));
                     event.setCancelled(true);
                 }else if (event.getItem().getType().equals(Material.MAGENTA_GLAZED_TERRACOTTA) && event.getItem().getItemMeta().getDisplayName().equals(format("&eBack"))) {
                     if (p.getScoreboardTags().contains("Checkpoint 7")) {

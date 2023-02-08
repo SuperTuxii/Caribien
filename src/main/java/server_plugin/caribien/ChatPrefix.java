@@ -12,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 
 public class ChatPrefix implements Listener {
@@ -26,7 +28,6 @@ public class ChatPrefix implements Listener {
         User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
         Group group = LuckPermsProvider.get().getGroupManager().getGroup(user.getPrimaryGroup());
         assert group != null;
-        String prefix = user.getCachedData().getMetaData().getPrefix();
         String groupName;
         if (group.getDisplayName() == null) {
             groupName = group.getName();
@@ -34,7 +35,7 @@ public class ChatPrefix implements Listener {
             groupName = group.getDisplayName();
         }
 
-        e.setFormat(format(prefix)+groupName + "" + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §8>> " + ChatColor.GRAY + e.getMessage());
+        e.setFormat(format(groupName) + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §8>> " + ChatColor.WHITE + e.getMessage());
 
         Bukkit.getOnlinePlayers().stream().filter(player -> message.contains(p.getName())).forEach(player -> p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1));
     }
@@ -45,7 +46,6 @@ public class ChatPrefix implements Listener {
         User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
         Group group = LuckPermsProvider.get().getGroupManager().getGroup(user.getPrimaryGroup());
         assert group != null;
-        String prefix = user.getCachedData().getMetaData().getPrefix();
         String groupName;
         if (group.getDisplayName() == null) {
             groupName = group.getName();
@@ -53,7 +53,7 @@ public class ChatPrefix implements Listener {
             groupName = group.getDisplayName();
         }
 
-        e.setJoinMessage(format(prefix) + groupName + "" + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §bist auf der Insel gestrandet!"));
+        e.setJoinMessage(format(groupName) + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §bist auf der Insel gestrandet!");
     }
     
     @EventHandler
@@ -62,7 +62,6 @@ public class ChatPrefix implements Listener {
         User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
         Group group = LuckPermsProvider.get().getGroupManager().getGroup(user.getPrimaryGroup());
         assert group != null;
-        String prefix = user.getCachedData().getMetaData().getPrefix();
         String groupName;
         if (group.getDisplayName() == null) {
             groupName = group.getName();
@@ -70,7 +69,7 @@ public class ChatPrefix implements Listener {
             groupName = group.getDisplayName();
         }
 
-        e.setQuitMessage(format(prefix) + groupName + "" + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §bist dem Fluch der Insel entkommen!"));
+        e.setQuitMessage(format(groupName) + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §3ist dem Fluch der Insel entkommen!");
     }
     
     @EventHandler
@@ -79,7 +78,6 @@ public class ChatPrefix implements Listener {
         User user = LuckPermsProvider.get().getPlayerAdapter(Player.class).getUser(p);
         Group group = LuckPermsProvider.get().getGroupManager().getGroup(user.getPrimaryGroup());
         assert group != null;
-        String prefix = user.getCachedData().getMetaData().getPrefix();
         String groupName;
         if (group.getDisplayName() == null) {
             groupName = group.getName();
@@ -87,7 +85,7 @@ public class ChatPrefix implements Listener {
             groupName = group.getDisplayName();
         }
 
-        e.setLeaveMessage(format(prefix) + groupName + "" + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §bist über die Planke gegangen!"));
+        e.setLeaveMessage(format(groupName) + " §8| " + ChatColor.GRAY + e.getPlayer().getName() + " §3ist über die Planke gegangen!");
     }
 
     public String format(String message) {

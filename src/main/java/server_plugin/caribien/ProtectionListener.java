@@ -1,16 +1,23 @@
 package server_plugin.caribien;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+
+import java.util.Objects;
 
 public class ProtectionListener implements Listener {
 
@@ -49,7 +56,9 @@ public class ProtectionListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
-        e.setCancelled(true);
+        if (!e.getCause().equals(EntityDamageEvent.DamageCause.VOID)) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -65,7 +74,7 @@ public class ProtectionListener implements Listener {
     @EventHandler
     public void onEntityInteract(EntityInteractEvent event) {
         Block block = event.getBlock();
-        if(block != null && block.getType() == Material.FARMLAND) {
+        if(block.getType() == Material.FARMLAND) {
             event.setCancelled(true);
         }
     }
@@ -73,7 +82,7 @@ public class ProtectionListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if(event.getAction() == Action.PHYSICAL) {
-            if(event.getClickedBlock().getType() == Material.FARMLAND) {
+            if(Objects.requireNonNull(event.getClickedBlock()).getType() == Material.FARMLAND) {
                 event.setCancelled(true);
             }
         }
