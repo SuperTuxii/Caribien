@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
-import java.util.Objects;
+import java.util.*;
 
 public class Jump_N_Run implements Listener {
 
@@ -278,9 +278,11 @@ public class Jump_N_Run implements Listener {
             public void run() {
                 if (!p.isOnline()) {
                     p.removeScoreboardTag("Jump'n Run");
+                    updateBest();
                     cancel();
                 }
                 if (!p.getScoreboardTags().contains("Jump'n Run")) {
+                    updateBest();
                     cancel();
                 }else {
                     ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -312,48 +314,106 @@ public class Jump_N_Run implements Listener {
         s0.setScore(6);
         Score s1 = objective.getScore(format("&6&lBestzeit:"));
         s1.setScore(5);
-        Score s2 = objective.getScore(formatTime(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore()));
+        Score s2 = objective.getScore(formatTime(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore(), "&e"));
         s2.setScore(4);
         Score s3 = objective.getScore(format("&1 "));
         s3.setScore(3);
         Score s7 = objective.getScore(format("&6&lZeit:"));
         s7.setScore(2);
-        Score s8 = objective.getScore(formatTime(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore()));
+        Score s8 = objective.getScore(formatTime(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore(), "&e"));
         s8.setScore(1);
     }
 
     public void updateScoreboard(Objective objective, int time, int old_time) {
-        Score SpielzeitScore = objective.getScore(formatTime(time));
+        Score SpielzeitScore = objective.getScore(formatTime(time, "&e"));
         SpielzeitScore.setScore(1);
-        SpielzeitScore = objective.getScore(formatTime(old_time));
+        SpielzeitScore = objective.getScore(formatTime(old_time, "&e"));
         if (SpielzeitScore.isScoreSet() && SpielzeitScore.getScore() == 1) {
-            Objects.requireNonNull(objective.getScoreboard()).resetScores(formatTime(old_time));
+            Objects.requireNonNull(objective.getScoreboard()).resetScores(formatTime(old_time, "&e"));
         }
     }
 
-    public String formatTime(int time) {
+    public void updateBest() {
+        int i;
+        int i2;
+        int i3;
+        int i4;
+        int rank;
+        for (i = 0; i < Bukkit.getWorlds().get(0).getEntities().size(); i++) {
+            for (i2 = 1; i2 < 10; i2++) {
+                if (Bukkit.getWorlds().get(0).getEntities().get(i).getScoreboardTags().contains("JumpBest" + i2)) {
+                    rank = 0;
+                    for (i3 = 0; i3 < getBestNumbers().size(); i3++) {
+                        for (i4 = 0; i4 < getBestNames().size(); i4++) {
+                            if (getBestNumbers().get(i3) == 0) {
+                                continue;
+                            }
+                            if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(getBestNames().get(i4)).getScore() == getBestNumbers().get(i3)) {
+                                if (rank == 0) {
+                                    rank++;
+                                }
+                                if (rank == i2) {
+                                    if (i2 == 1) {
+                                        Bukkit.getWorlds().get(0).getEntities().get(i).setCustomName(format("&b1. &e" + getBestNames().get(i4) + " &8- " + formatTime(getBestNumbers().get(i3), "&f")));
+                                    }else if (i2 == 2) {
+                                        Bukkit.getWorlds().get(0).getEntities().get(i).setCustomName(format("&b2. &7" + getBestNames().get(i4) + " &8- " + formatTime(getBestNumbers().get(i3), "&f")));
+                                    }else if (i2 == 3) {
+                                        Bukkit.getWorlds().get(0).getEntities().get(i).setCustomName(format("&b3. &6" + getBestNames().get(i4) + " &8- " + formatTime(getBestNumbers().get(i3), "&f")));
+                                    }else {
+                                        Bukkit.getWorlds().get(0).getEntities().get(i).setCustomName(format("&b" + i2 + ". &f" + getBestNames().get(i4) + " &8- " + formatTime(getBestNumbers().get(i3), "&f")));
+                                    }
+                                    rank++;
+                                    break;
+                                }
+                                rank++;
+                            }
+                        }
+                    }
+                    if (Bukkit.getWorlds().get(0).getEntities().get(i).getCustomName() == null) {
+                        Bukkit.getWorlds().get(0).getEntities().get(i).setCustomName(" ");
+                    }
+                    Bukkit.getWorlds().get(0).getEntities().get(i).setCustomNameVisible(true);
+                }
+            }
+        }
+    }
+
+    public ArrayList<Integer> getBestNumbers() {
+        ArrayList<Integer> Best = new ArrayList<>();
+        for (String Entry : Objects.requireNonNull(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScoreboard()).getEntries()) {
+            Best.add(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(Entry).getScore());
+        }
+        Collections.sort(Best);
+        return Best;
+    }
+
+    public ArrayList<String> getBestNames() {
+        return new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScoreboard()).getEntries());
+    }
+
+    public String formatTime(int time, String color) {
         String string = format("&4ERROR");
         if (time < 20) {
-            string = format("&e" + "00" + ":" + time);
+            string = format(color + "00" + ":" + time);
         } else if (time < 1200) {
             int seconds = time / 20;
             if (seconds < 10) {
-                string = format("&e" + "0" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + "0" + seconds + ":" + ((time % 20) * 3));
             } else {
-                string = format("&e" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + seconds + ":" + ((time % 20) * 3));
             }
         } else if (time < 72000) {
             int seconds = time % 1200;
             seconds /= 20;
             int minutes = time / 1200;
             if (seconds < 10 && minutes < 10) {
-                string = format("&e" + "0" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + "0" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
             } else if (seconds < 10) {
-                string = format("&e" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
             } else if (minutes < 10) {
-                string = format("&e" + "0" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + "0" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
             } else {
-                string = format("&e" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + minutes + ":" + seconds + ":" + ((time % 20) * 3));
             }
         } else if (time > 72000) {
             int seconds = time % 1200;
@@ -362,21 +422,21 @@ public class Jump_N_Run implements Listener {
             minutes /= 1200;
             int hours = time / 72000;
             if (seconds < 10 && minutes < 10 && hours < 10) {
-                string = format("&e" + "0" + hours + ":0" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + "0" + hours + ":0" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
             } else if (seconds >= 10 && minutes < 10 && hours < 10) {
-                string = format("&e" + "0" + hours + ":0" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + "0" + hours + ":0" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
             } else if (seconds < 10 && minutes >= 10 && hours < 10) {
-                string = format("&e" + "0" + hours + ":" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + "0" + hours + ":" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
             } else if (seconds >= 10 && minutes >= 10 && hours < 10) {
-                string = format("&e" + "0" + hours + ":" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + "0" + hours + ":" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
             } else if (seconds < 10 && minutes < 10) {
-                string = format("&e" + hours + ":0" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + hours + ":0" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
             } else if (seconds >= 10 && minutes < 10) {
-                string = format("&e" + hours + ":0" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + hours + ":0" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
             } else if (seconds < 10) {
-                string = format("&e" + hours + ":" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + hours + ":" + minutes + ":0" + seconds + ":" + ((time % 20) * 3));
             } else {
-                string = format("&e" + hours + ":" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
+                string = format(color + hours + ":" + minutes + ":" + seconds + ":" + ((time % 20) * 3));
             }
         }
         return string;
