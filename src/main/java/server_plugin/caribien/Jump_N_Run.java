@@ -40,7 +40,7 @@ public class Jump_N_Run implements Listener {
 
         if(block.getType().equals(Material.LAPIS_BLOCK)) {
             //Start
-            if (!p.getScoreboardTags().contains("Jump'n Run")) {
+            if (!p.getScoreboardTags().contains("Jump'n Run") && !p.getGameMode().equals(GameMode.SPECTATOR)) {
                 p.addScoreboardTag("Jump'n Run");
                 Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).setScore(0);
                 p.getInventory().clear();
@@ -104,115 +104,122 @@ public class Jump_N_Run implements Listener {
                 }
             }
         }else if (block.getType().equals(Material.DIAMOND_BLOCK) && p.getScoreboardTags().contains("Jump'n Run")) {
-            //Ende
-            p.removeScoreboardTag("Jump'n Run");
-            p.removeScoreboardTag("Checkpoint 1");
-            p.removeScoreboardTag("Checkpoint 2");
-            p.removeScoreboardTag("Checkpoint 3");
-            p.removeScoreboardTag("Checkpoint 4");
-            p.removeScoreboardTag("Checkpoint 5");
-            p.removeScoreboardTag("Checkpoint 6");
-            p.removeScoreboardTag("Checkpoint 7");
-            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 0f);
-            if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() <= Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() || Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() == 0) {
-                Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).setScore(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore());
+            if (!p.getScoreboardTags().contains("Checkpoint 1") && !p.getScoreboardTags().contains("Checkpoint 2") && !p.getScoreboardTags().contains("Checkpoint 3") && !p.getScoreboardTags().contains("Checkpoint 4") && !p.getScoreboardTags().contains("Checkpoint 5") && !p.getScoreboardTags().contains("Checkpoint 6") && !p.getScoreboardTags().contains("Checkpoint 7")) {
+                p.removeScoreboardTag("Jump'n Run");
+                p.sendMessage(format("&4Du brauchst mindestens einen Checkpoint!"));
+                p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_NODAMAGE, SoundCategory.MASTER, 10, 0.5F);
+                p.getInventory().clear();
+            }else {
+                //Ende
+                p.removeScoreboardTag("Jump'n Run");
+                p.removeScoreboardTag("Checkpoint 1");
+                p.removeScoreboardTag("Checkpoint 2");
+                p.removeScoreboardTag("Checkpoint 3");
+                p.removeScoreboardTag("Checkpoint 4");
+                p.removeScoreboardTag("Checkpoint 5");
+                p.removeScoreboardTag("Checkpoint 6");
+                p.removeScoreboardTag("Checkpoint 7");
+                p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 0f);
+                if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() <= Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() || Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() == 0) {
+                    Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).setScore(Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore());
+                }
+                String BestZeit = "00:00";
+                if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() < 20) {
+                    BestZeit = format("&e" + "00" + ":" + Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore());
+                } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() < 1200) {
+                    int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() / 20;
+                    if (seconds < 10) {
+                        BestZeit = format("&e" + "0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else {
+                        BestZeit = format("&e" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    }
+                } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() < 72000) {
+                    int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 1200;
+                    seconds /= 20;
+                    int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() / 1200;
+                    if (seconds < 10 && minutes < 10) {
+                        BestZeit = format("&e" + "0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds < 10) {
+                        BestZeit = format("&e" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (minutes < 10) {
+                        BestZeit = format("&e" + "0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else {
+                        BestZeit = format("&e" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    }
+                } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() > 72000) {
+                    int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 1200;
+                    seconds /= 20;
+                    int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 72000;
+                    minutes /= 1200;
+                    int hours = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() / 72000;
+                    if (seconds < 10 && minutes < 10 && hours < 10) {
+                        BestZeit = format("&e" + "0" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds >= 10 && minutes < 10 && hours < 10) {
+                        BestZeit = format("&e" + "0" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds < 10 && minutes >= 10 && hours < 10) {
+                        BestZeit = format("&e" + "0" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds >= 10 && minutes >= 10 && hours < 10) {
+                        BestZeit = format("&e" + "0" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds < 10 && minutes < 10) {
+                        BestZeit = format("&e" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds >= 10 && minutes < 10) {
+                        BestZeit = format("&e" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds < 10) {
+                        BestZeit = format("&e" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else {
+                        BestZeit = format("&e" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    }
+                }
+                String Zeit = "00:00";
+                if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() < 20) {
+                    Zeit = format("&e" + "00" + ":" + Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore());
+                } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() < 1200) {
+                    int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() / 20;
+                    if (seconds < 10) {
+                        Zeit = format("&e" + "0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else {
+                        Zeit = format("&e" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    }
+                } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() < 72000) {
+                    int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 1200;
+                    seconds /= 20;
+                    int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() / 1200;
+                    if (seconds < 10 && minutes < 10) {
+                        Zeit = format("&e" + "0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds < 10) {
+                        Zeit = format("&e" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (minutes < 10) {
+                        Zeit = format("&e" + "0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else {
+                        Zeit = format("&e" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    }
+                } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() > 72000) {
+                    int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 1200;
+                    seconds /= 20;
+                    int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 72000;
+                    minutes /= 1200;
+                    int hours = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() / 72000;
+                    if (seconds < 10 && minutes < 10 && hours < 10) {
+                        Zeit = format("&e" + "0" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds >= 10 && minutes < 10 && hours < 10) {
+                        Zeit = format("&e" + "0" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds < 10 && minutes >= 10 && hours < 10) {
+                        Zeit = format("&e" + "0" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds >= 10 && minutes >= 10 && hours < 10) {
+                        Zeit = format("&e" + "0" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds < 10 && minutes < 10) {
+                        Zeit = format("&e" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds >= 10 && minutes < 10) {
+                        Zeit = format("&e" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else if (seconds < 10) {
+                        Zeit = format("&e" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    } else {
+                        Zeit = format("&e" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
+                    }
+                }
+                p.sendMessage(format("&aZeit: " + Zeit + " &6Bestzeit: " + BestZeit));
+                p.getInventory().clear();
             }
-            String BestZeit = "00:00";
-            if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() < 20) {
-                BestZeit = format("&e" + "00" + ":" + Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore());
-            }else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() < 1200) {
-                int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() / 20;
-                if (seconds < 10) {
-                    BestZeit = format("&e" + "0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else {
-                    BestZeit = format("&e" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }
-            } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() < 72000) {
-                int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 1200;
-                seconds /= 20;
-                int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() / 1200;
-                if (seconds < 10 && minutes < 10) {
-                    BestZeit = format("&e" + "0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds < 10) {
-                    BestZeit = format("&e" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (minutes < 10) {
-                    BestZeit = format("&e" + "0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else {
-                    BestZeit = format("&e" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }
-            } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() > 72000) {
-                int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 1200;
-                seconds /= 20;
-                int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 72000;
-                minutes /= 1200;
-                int hours = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() / 72000;
-                if (seconds < 10 && minutes < 10 && hours < 10) {
-                    BestZeit = format("&e" + "0" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds >= 10 && minutes < 10 && hours < 10) {
-                    BestZeit = format("&e" + "0" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds < 10 && minutes >= 10 && hours < 10) {
-                    BestZeit = format("&e" + "0" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds >= 10 && minutes >= 10 && hours < 10) {
-                    BestZeit = format("&e" + "0" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds < 10 && minutes < 10) {
-                    BestZeit = format("&e" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds >= 10 && minutes < 10) {
-                    BestZeit = format("&e" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds < 10) {
-                    BestZeit = format("&e" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else {
-                    BestZeit = format("&e" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }
-            }
-            String Zeit = "00:00";
-            if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() < 20) {
-                Zeit = format("&e" + "00" + ":" + Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore());
-            }else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() < 1200) {
-                int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() / 20;
-                if (seconds < 10) {
-                    Zeit = format("&e" + "0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else {
-                    Zeit = format("&e" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }
-            } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() < 72000) {
-                int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 1200;
-                seconds /= 20;
-                int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() / 1200;
-                if (seconds < 10 && minutes < 10) {
-                    Zeit = format("&e" + "0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds < 10) {
-                    Zeit = format("&e" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (minutes < 10) {
-                    Zeit = format("&e" + "0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else {
-                    Zeit = format("&e" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }
-            } else if (Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() > 72000) {
-                int seconds = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 1200;
-                seconds /= 20;
-                int minutes = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 72000;
-                minutes /= 1200;
-                int hours = Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() / 72000;
-                if (seconds < 10 && minutes < 10 && hours < 10) {
-                    Zeit = format("&e" + "0" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds >= 10 && minutes < 10 && hours < 10) {
-                    Zeit = format("&e" + "0" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds < 10 && minutes >= 10 && hours < 10) {
-                    Zeit = format("&e" + "0" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds >= 10 && minutes >= 10 && hours < 10) {
-                    Zeit = format("&e" + "0" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds < 10 && minutes < 10) {
-                    Zeit = format("&e" + hours + ":0" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds >= 10 && minutes < 10) {
-                    Zeit = format("&e" + hours + ":0" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else if (seconds < 10) {
-                    Zeit = format("&e" + hours + ":" + minutes + ":0" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }else {
-                    Zeit = format("&e" + hours + ":" + minutes + ":" + seconds + ":" + ((Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run Zeit")).getScore(p.getName()).getScore() % 20) * 3));
-                }
-            }
-            p.sendMessage(format("&aZeit: " + Zeit + " &6Bestzeit: " + BestZeit));
-            p.getInventory().clear();
         }
 
     }
@@ -267,6 +274,7 @@ public class Jump_N_Run implements Listener {
     }
 
     public void Jump_N_Run_Timer(Player p) {
+        boolean isCreative = p.getGameMode().equals(GameMode.CREATIVE);
         if (!Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).isScoreSet()) {
             Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(p.getName()).setScore(0);
         }
@@ -276,12 +284,19 @@ public class Jump_N_Run implements Listener {
 
             @Override
             public void run() {
+                p.setGameMode(GameMode.ADVENTURE);
                 if (!p.isOnline()) {
                     p.removeScoreboardTag("Jump'n Run");
+                    if (isCreative) {
+                        p.setGameMode(GameMode.CREATIVE);
+                    }
                     updateBest();
                     cancel();
                 }
                 if (!p.getScoreboardTags().contains("Jump'n Run")) {
+                    if (isCreative) {
+                        p.setGameMode(GameMode.CREATIVE);
+                    }
                     updateBest();
                     cancel();
                 }else {
@@ -342,6 +357,7 @@ public class Jump_N_Run implements Listener {
         for (i = 0; i < Bukkit.getWorlds().get(0).getEntities().size(); i++) {
             for (i2 = 1; i2 < 10; i2++) {
                 if (Bukkit.getWorlds().get(0).getEntities().get(i).getScoreboardTags().contains("JumpBest" + i2)) {
+                    Bukkit.getWorlds().get(0).getEntities().get(i).setCustomName(" ");
                     rank = 0;
                     for (i3 = 0; i3 < getBestNumbers().size(); i3++) {
                         for (i4 = 0; i4 < getBestNames().size(); i4++) {

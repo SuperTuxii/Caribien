@@ -72,8 +72,11 @@ public class setupCommand implements CommandExecutor {
                     } else {
                         ScoreboardHelp(p);
                     }
-                } else if (!args[0].equalsIgnoreCase("treasure") && !args[1].equalsIgnoreCase("hunter")){
-                    MainHelp(p);
+                }else if (args[0].equalsIgnoreCase("jump'nrun") && args.length > 1) {
+                    if (args[1].equalsIgnoreCase("reset") && args.length == 3) {
+                        Objects.requireNonNull(mainScoreboard.getObjective("Jump'n Run bZeit")).getScore(args[2]).setScore(0);
+                    }
+
                 }
             }else {
                 p.sendMessage(format("§b§lCaribien " + "§a§l| " + ChatColor.RED + "Dazu hast du keine Rechte "));
