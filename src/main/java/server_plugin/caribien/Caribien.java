@@ -206,7 +206,7 @@ public final class Caribien extends JavaPlugin implements Listener {
                 Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).setScore(Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).getScore() + 1);
                 jedis.set(p.getUniqueId() + "spielzeit", String.valueOf(Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).getScore()));
                 if (Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).getScore() != Integer.parseInt(jedis.get(p.getUniqueId() + "coins"))) {
-                    jedis.set(p.getUniqueId() + "coins", String.valueOf(Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).getScore()));
+                    jedis.set(p.getUniqueId() + "coins", String.valueOf(Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).getScore()));
                 }
 
                 if (!p.getScoreboardTags().contains("Jump'n Run")) {
@@ -234,7 +234,9 @@ public final class Caribien extends JavaPlugin implements Listener {
                         Jump_N_Run = false;
                     }else {
                         assert objective != null;
-                        updateScoreboard(objective, toSpielzeit(Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).getScore()), toSpielzeit(oldSpielzeit), Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).getScore(), oldCoins);
+                        if (p.isOnline()) {
+                            updateScoreboard(objective, toSpielzeit(Objects.requireNonNull(mainScoreboard.getObjective("Spielzeit'")).getScore(p.getName()).getScore()), toSpielzeit(oldSpielzeit), Objects.requireNonNull(mainScoreboard.getObjective("Coins")).getScore(p.getName()).getScore(), oldCoins);
+                        }
                     }
                 }
                 if (p.getScoreboardTags().contains("Jump'n Run")) {
